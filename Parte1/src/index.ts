@@ -9,7 +9,7 @@ app.use(express.json());
 //transformar los datos de un formulario html a objetos json 
 app.use(express.urlencoded({extended:false}));
 
-//app.use(TestA.main);
+app.use(TestA.main);
 
 app.use(TestB.main);
 
