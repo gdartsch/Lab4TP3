@@ -115,7 +115,7 @@ export class TestA{
             'Kms recorridos de la primera hoja de ruta: ' + 
             vehiculo.getHojasRuta()[0].calcularTotalKilometros());
         console.log(
-            'Kms recorridos de la primera hoja de ruta: ' +
+            'Total kms recorridos: ' +
             vehiculo.calcularTotalKilometrosRecorridos(
                 new Date(2019, 1, 1), new Date(2022, 1, 2)));
     }
