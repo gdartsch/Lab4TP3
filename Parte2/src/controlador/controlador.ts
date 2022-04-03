@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { cxMysql } from '../mysqldb';
 
-export const getArticulos = (req:Request, res:Response) => new Promise((resolve, reject) => {
+export const getEmpleados = (req:Request, res:Response) => new Promise((resolve, reject) => {
     cxMysql.getConnection((err, connection) => {
         if (err){ 
           console.error(err);
@@ -9,7 +9,7 @@ export const getArticulos = (req:Request, res:Response) => new Promise((resolve,
           return;
         }
         console.log('MySQL Connection: ', connection.threadId);
-        connection.query('SELECT * FROM articulo limit 10', (err, results) => {
+        connection.query('SELECT * FROM empleado', (err, results) => {
           if (err) console.error(err);
           //console.log('User Query Results: ', results);
           res.send(results)
@@ -18,25 +18,25 @@ export const getArticulos = (req:Request, res:Response) => new Promise((resolve,
       });
   }); 
 
-export const getArticulosXID = (req:Request, res:Response) => new Promise((resolve, reject) => {
-    const idArt = parseInt(req.params.id);
+export const getEmpladoXID = (req:Request, res:Response) => new Promise((resolve, reject) => {
+    const idEmpleado = parseInt(req.params.legajo);
     cxMysql.getConnection((err, connection) => {
         if (err){
           console.error(err);
           res.send(err);
           return;
         } 
-        connection.query('SELECT * FROM articulo WHERE id = ?', [idArt], (err, results) => {
+        connection.query('SELECT * FROM empleado WHERE Legajo = ?', [idEmpleado], (err, results) => {
           if (err) console.error(err);
           res.send(results)
         });
       });
   });
 
-export const crearArticulo = (req:Request, res:Response) => new Promise((resolve, reject) => {
+export const altaEmpleado = (req:Request, res:Response) => new Promise((resolve, reject) => {
     
-    const {fechaAlta, codigo, denominacion, precio, publicado} = req.body;
-    var values = [fechaAlta, codigo, denominacion, precio, publicado];
+    const {Legajo, Apellido, Nombre, DNI, Sector, FechaIngreso, Activo} = req.body;
+    var values = [Legajo, Apellido, Nombre, DNI, Sector, FechaIngreso, Activo];
     cxMysql.getConnection((err, connection) => {
         if (err) {
             console.error(err);
@@ -44,22 +44,22 @@ export const crearArticulo = (req:Request, res:Response) => new Promise((resolve
             return;
         }
         else{
-            let sql:string = 'INSERT INTO articulo(fechaAlta, codigo, denominacion, precio, publicado) VALUES (?, ?, ?, ?, ?)';
+            let sql:string = 'INSERT INTO empleado(Legajo, Apellido, Nombre, DNI, Sector, FechaIngreso, Activo) VALUES (?, ?, ?, ?, ?, ?, ?)';
             connection.query(sql, values, (err, results) => {
                 if (err) {
                   console.error(err);
                   res.json({message:"Error al tratar de insertar"})
                 }else{
-                  res.json({message:"Articulo Insertado con exito"})
+                  res.json({message:"Empleado dado de alta con exito"})
                 }
               });
         }          
       });
 });
 
-export const actualizarArticulo = (req:Request, res:Response) => new Promise((resolve, reject) => {
-    const {id, fechaAlta, codigo, denominacion, precio, publicado} = req.body;
-    var values = [fechaAlta, codigo, denominacion, precio, publicado, id];
+export const actualizarEmpleado = (req:Request, res:Response) => new Promise((resolve, reject) => {
+    const {Legajo, Apellido, Nombre, DNI, Sector, FechaIngreso, Activo} = req.body;
+    var values = [Apellido, Nombre, DNI, Sector, FechaIngreso, Activo, Legajo];
     cxMysql.getConnection((err, connection) => {
         if (err) {
             console.error(err);
@@ -67,13 +67,13 @@ export const actualizarArticulo = (req:Request, res:Response) => new Promise((re
             return;
         }
         else{
-            let sql:string = 'UPDATE articulo SET fechaAlta=?, codigo=?, denominacion=?, precio=?, publicado=? WHERE id=?';
+            let sql:string = 'UPDATE empleado SET Apellido=?, Nombre=?, DNI=?, Sector=?, FechaIngreso=?, Activo=? WHERE Legajo=?';
             connection.query(sql, values, (err, results) => {
                 if (err) {
                   console.error(err);
                   res.json({message:"Error al actualizar " + err})
                 }else{
-                  res.json({message:"Articulo Actualizado con exito"})
+                  res.json({message:"Empleado Actualizado con exito"})
                 }
                
               });
@@ -81,20 +81,20 @@ export const actualizarArticulo = (req:Request, res:Response) => new Promise((re
       });
 });
 
-export const eliminarArticulo = (req:Request, res:Response) => new Promise((resolve, reject) => {
-    const idArt = parseInt(req.params.id);
+export const bajaEmpleado = (req:Request, res:Response) => new Promise((resolve, reject) => {
+    const Legajo = parseInt(req.params.legajo);
     cxMysql.getConnection((err, connection) => {
           if (err) {
             console.error(err);
             res.send(err);
             return;
           }
-          connection.query('DELETE FROM articulo WHERE id = ?', [idArt],(err, results) => {
+          connection.query('DELETE FROM empleado WHERE Legajo = ?', [Legajo],(err, results) => {
           if (err) {
             console.error(err);
-            res.json({message:"Error al tratar de Eliminar"})
+            res.json({message:"Error al tratar de dar de baja"})
           }else{
-            res.json({message:"Articulo Eliminado con exito"})
+            res.json({message:"Empleado dado de baja con exito"})
           }
           
         });
